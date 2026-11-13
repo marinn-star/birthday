@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Happy Birthday Bebehh</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #05020a;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+#confettiCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 15px;
+}
+
+/* GIFT */
+
+.gift-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.5s ease;
+}
+
+.gift-box-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.badge-number {
+  position: absolute;
+  top: -24px;
+  background: #ff4d8d;
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  z-index: 10;
+  box-shadow: 0 0 10px #ff4d8d;
+}
+
+.gift-lid {
+  position: absolute;
+  top: 0;
+  width: 110px;
+  height: 25px;
+  background: #ff4d8d;
+  border-radius: 4px;
+  z-index: 5;
+  transition: transform 0.6s ease;
+}
+
+.gift-lid::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 100%;
+  background: #ffc2d1;
+}
+
+.gift-body {
+  position: absolute;
+  bottom: 0;
+  width: 100px;
+  height: 80px;
+  background: #e6005c;
+  border-radius: 0 0 6px 6px;
+  transition: transform 0.6s ease;
+}
+
+.gift-body::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 100%;
+  background: #ffc2d1;
+}
+
+.gift-title {
+  margin-top: 30px;
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.2rem;
+  color: #ff4d8d;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+  text-shadow: 0 0 12px #ff4d8d;
+}
+
+.gift-section.open .gift-lid {
+  transform: translateY(-90px);
+}
+
+.gift-section.open .gift-body {
+  transform: translateY(40px);
+}
+
+.gift-section.open .gift-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* CAROUSEL */
+
+.carousel-section {
+  display: none;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1s ease forwards;
+}
+
+.hint-header {
+  font-size: 0.85rem;
+  color: #ddd;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.card {
+  position: absolute;
+  width: 230px;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1e1e2f;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.08);
+  user-select: none;
+}
+
+.card-placeholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2b1055, #7597de);
+}
+
+.card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.card-hint-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.65);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.7;
+  z-index: 3;
+}
+
+.card.show-message .card-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* CONTROLS */
+
+.controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 25px;
+}
+
+.nav-btn {
+  background: #e6005c;
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(230,0,92,0.4);
+}
+
+.nav-btn:active {
+  transform: scale(0.9);
+}
+
+.counter-tag {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 500px) {
+  .card {
+    width: 210px;
+    height: 290px;
+  }
+
+  .carousel-wrapper {
+    height: 350px;
+  }
+
+  .gift-title {
+    font-size: 2rem;
+  }
+}
+</style>
+</head>
+
+<body>
+<audio id="birthdayMusic" loop>
+  <source src="audio/birthday.mp3" type="audio/mpeg">
+</audio>
+<canvas id="confettiCanvas"></canvas>
+
+<div class="container">
+
+  <!-- GIFT -->
+
+  <div class="gift-section" id="giftSection" onclick="openGift()">
+
+    <div class="gift-box-wrapper">
+      <div class="badge-number">2 ♥</div>
+      <div class="gift-lid"></div>
+      <div class="gift-body"></div>
+    </div>
+
+    <div class="gift-title">
+      Happy Birthday bebeh
+    </div>
+
+  </div>
+
+  <!-- CAROUSEL -->
+
+  <div class="carousel-section" id="carouselSection">
+
+    <div class="hint-header">
+      <span>kenangan terindahh</span>
+      <span style="color:#ff4d8d;">♥</span>
+    </div>
+
+    <div class="carousel-wrapper" id="carousel">
+
+      <!-- FOTO 1 -->
+      <div class="card">
+        <div class="card-placeholder">
+          <img src="bebeh img/WhatsApp Image 2026-11-10 at 20.50.48.jpeg" class="card-photo" alt="Foto 1">
+        </div>
+        <div class="card-hint-tag">klik untuk melihat pesan</div>
+        <div class="card-overlay">
+          selmat ulang tahun bebehh,udah tambah umurr ajaa,tambah umur tambah tua jugaa yaa
+        </div>
+      </div>
+
+      <!-- FOTO 2 -->
+      <div class="card">
+        <div class="card-placeholder">
+          <img src="bebeh img/WhatsApp Image 2026-11-10 at 20.51.11.jpeg" class="card-photo" alt="Foto 2">
+        </div>
+        <div class="card-hint-tag">klik untuk melihat pesan</div>
+        <div class="card-overlay">
+          jaga kesehatan kamuu yaa, makan yg banyakk jugaa biar ga kuyuss,capai cita cita kamuu akuu bakalan tetap support kamuu trs
+        </div>
+      </div>
+
+      <!-- FOTO 3 -->
+      <div class="card">
+        <div class="card-placeholder">
+          <img src="bebeh img/WhatsApp Image 2026-11-10 at 20.51.27.jpeg" class="card-photo" alt="Foto 3">
+        </div>
+        <div class="card-hint-tag">klik untuk melihat pesan</div>
+        <div class="card-overlay">
+          aku berharapp jugaa hubungan kitaa bisaa bertahan sangatt lamaa ataupun tidak ada perpisahan,kalau pun ada perpisahan ya tidak apa apa aku bakalan terima semua keputusan kamuu
+        </div>
+      </div>
+
+      <!-- FOTO 4 -->
+      <div class="card">
+        <div class="card-placeholder">
+          <img src="bebeh img/WhatsApp Image 2026-11-10 at 21.04.34.jpeg" class="card-photo" alt="Foto 4">
+        </div>
+        <div class="card-hint-tag">klik untuk melihat pesan</div>
+        <div class="card-overlay">
+          maaf bebehh menurut aku,aku ini kadang ga bisa kasih kamu soluusi ketika kamu ada masalah atau pun ceritaa ke akuu
+        </div>
+      </div>
+
+      <!-- FOTO 5 -->
+      <div class="card">
+        <div class="card-placeholder">
+          <img src="bebeh img/WhatsApp Image 2026-11-10 at 21.04.58.jpeg" class="card-photo" alt="Foto 5">
+        </div>
+        <div class="card-hint-tag">klik untuk melihat pesan</div>
+        <div class="card-overlay">
+          terakhirr,sekali lagii selamat ulang tahunn,ya bebehh semogaa di umur yg baru ini kmau selaluu di berikan kebahagiaan kesehatan dan semua hal yg baik yg kamu inginkan
+        </div>
+      </div>
+
+      <!-- FOTO 6 -->
+      <div class="card">
+        <div class="card-placeholder">
+          <img src="bebeh img/WhatsApp Image 2026-11-13 at 23.37.10.jpeg" class="card-photo" alt="Foto 6">
+        </div>
+        <div class="card-hint-tag">klik untuk melihat pesan</div>
+        <div class="card-overlay">
+          terimakasih sudah hadirr dalam hidup hidupku.aku berharap kita bisa trs bersama melewati suka maupun dukaa dan menciptakan lebih bnyak kenangan indah
+        </div>
+      </div>
+
+      <!-- FOTO 7 -->
+      <div class="card">
+        <div class="card-placeholder">
+          <img src="bebeh img/WhatsApp Image 2026-11-13 at 23.36.11.jpeg" class="card-photo" alt="Foto 7">
+        </div>
+        <div class="card-hint-tag">klik untuk melihat pesan </div>
+        <div class="card-overlay">
+          jangan pernah merasa sendirian karna gw selalu mendukung kamuu apa pun ituu i love you birthdayy bebehh
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NAVIGATION -->
+
+    <div class="controls-bar">
+
+      <button class="nav-btn" onclick="prevSlide()">
+        &lt;
+      </button>
+
+      <span class="counter-tag" id="counterTag">
+        1 / 7
+      </span>
+
+      <button class="nav-btn" onclick="nextSlide()">
+        &gt;
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+// CONFETTI
+
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+
+let confetti = [];
+let animationStarted = false;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function createConfetti() {
+
+  const colors = [
+    '#ff4d8d',
+    '#ff80ab',
+    '#ffb6c1',
+    '#ffffff',
+    '#e6005c'
+  ];
+
+  for (let i = 0; i < 70; i++) {
+
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      speedY: Math.random() * 2 + 1,
+      speedX: Math.random() * 1 - 0.5,
+      rotation: Math.random() * 360,
+      rotSpeed: Math.random() * 4 - 2
+    });
+
+  }
+}
+
+function animateConfetti() {
+
+  if (!animationStarted) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  confetti.forEach((p, index) => {
+
+    p.y += p.speedY;
+    p.x += p.speedX;
+    p.rotation += p.rotSpeed;
+
+    ctx.save();
+
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation * Math.PI / 180);
+
+    ctx.fillStyle = p.color;
+    ctx.fillRect(
+      -p.size / 2,
+      -p.size / 2,
+      p.size,
+      p.size
+    );
+
+    ctx.restore();
+
+    if (p.y > canvas.height) {
+      p.y = -10;
+      p.x = Math.random() * canvas.width;
+    }
+
+  });
+
+  requestAnimationFrame(animateConfetti);
+}
+
+// OPEN GIFT
+
+let giftOpened = false;
+
+function openGift() {
+
+  if (giftOpened) return;
+
+  giftOpened = true;
+
+  const giftSection = document.getElementById('giftSection');
+const music = document.getElementById('birthdayMusic');
+
+music.volume = 0.5;
+
+music.play().catch(error => {
+  console.log("Musik tidak dapat diputar:", error);
+});
+  giftSection.classList.add('open');
+
+  createConfetti();
+
+  animationStarted = true;
+  animateConfetti();
+
+  setTimeout(() => {
+
+    giftSection.style.opacity = '0';
+
+    setTimeout(() => {
+
+      giftSection.style.display = 'none';
+
+      document.getElementById('carouselSection').style.display = 'flex';
+
+      updateCarousel();
+
+    }, 500);
+
+  }, 2000);
+
+}
+
+// CAROUSEL
+
+let currentIndex = 0;
+
+const cards = document.querySelectorAll('.card');
+const totalCards = cards.length;
+
+function updateCarousel() {
+
+  cards.forEach((card, i) => {
+
+    card.classList.remove('show-message');
+
+    let offset = i - currentIndex;
+
+    if (offset < -Math.floor(totalCards / 2)) {
+      offset += totalCards;
+    }
+
+    if (offset > Math.floor(totalCards / 2)) {
+      offset -= totalCards;
+    }
+
+    if (offset === 0) {
+
+      card.style.transform =
+        'translateX(0) scale(1) rotateY(0deg)';
+
+      card.style.opacity = '1';
+      card.style.zIndex = '10';
+
+      card.onclick = () => {
+        card.classList.toggle('show-message');
+      };
+
+    }
+
+    else if (offset === 1) {
+
+      card.style.transform =
+        'translateX(150px) scale(0.8) rotateY(-25deg)';
+
+      card.style.opacity = '0.7';
+      card.style.zIndex = '5';
+
+      card.onclick = nextSlide;
+
+    }
+
+    else if (offset === -1) {
+
+      card.style.transform =
+        'translateX(-150px) scale(0.8) rotateY(25deg)';
+
+      card.style.opacity = '0.7';
+      card.style.zIndex = '5';
+
+      card.onclick = prevSlide;
+
+    }
+
+    else {
+
+      card.style.transform =
+        'translateX(0) scale(0.4)';
+
+      card.style.opacity = '0';
+      card.style.zIndex = '0';
+
+      card.onclick = null;
+
+    }
+
+  });
+
+  document.getElementById('counterTag').innerText =
+    `${currentIndex + 1} / ${totalCards}`;
+
+}
+
+function nextSlide() {
+
+  currentIndex = (currentIndex + 1) % totalCards;
+
+  updateCarousel();
+
+}
+
+function prevSlide() {
+
+  currentIndex =
+    (currentIndex - 1 + totalCards) % totalCards;
+
+  updateCarousel();
+
+}
+function toggleMusic() {
+  const music = document.getElementById('birthdayMusic');
+  const button = document.getElementById('musicButton');
+
+  if (music.paused) {
+    music.play();
+    button.innerText = '🔊 Music ON';
+  } else {
+    music.pause();
+    button.innerText = '🔇 Music OFF';
+  }
+}
+</script>
+
+</body>
+</html>
